@@ -1,0 +1,469 @@
+package Main;
+
+/**
+ * Created by Max on 7/25/2017.
+ */
+
+        import javafx.application.Application;
+        import javafx.beans.binding.Bindings;
+        import javafx.beans.property.ObjectProperty;
+        import javafx.event.ActionEvent;
+        import javafx.event.EventHandler;
+        import javafx.geometry.Insets;
+        import javafx.geometry.Pos;
+        import javafx.geometry.VPos;
+        import javafx.scene.Node;
+        import javafx.scene.Scene;
+        import javafx.scene.control.Button;
+        import javafx.scene.control.Hyperlink;
+        import javafx.scene.control.Label;
+        import javafx.scene.image.Image;
+        import javafx.scene.image.ImageView;
+        import javafx.scene.input.MouseEvent;
+        import javafx.scene.layout.AnchorPane;
+        import javafx.scene.layout.BorderPane;
+        import javafx.scene.layout.FlowPane;
+        import javafx.scene.layout.GridPane;
+        import javafx.scene.layout.HBox;
+        import javafx.scene.layout.Priority;
+        import javafx.scene.layout.StackPane;
+        import javafx.scene.layout.TilePane;
+        import javafx.scene.layout.VBox;
+        import javafx.scene.paint.Color;
+        import javafx.scene.paint.CycleMethod;
+        import javafx.scene.paint.LinearGradient;
+        import javafx.scene.paint.Stop;
+        import javafx.scene.shape.Rectangle;
+        import javafx.scene.text.Font;
+        import javafx.scene.text.FontWeight;
+        import javafx.scene.text.Text;
+        import javafx.stage.Stage;
+
+        import java.awt.*;
+        import java.util.ArrayList;
+        import java.util.stream.IntStream;
+
+
+/**
+ * Sample application that shows examples of the different layout panes
+ * provided by the JavaFX layout API.
+ * The resulting UI is for demonstration purposes only and is not interactive.
+ */
+
+
+public class LayoutSample extends Application {
+    Scene scene1, scene2;
+    static int nClicks = 0;
+    static ArrayList<Button> list = new ArrayList<>();
+    static boolean flag = false;
+    static Color text = Color.web("#57ffb7");
+static String styleSet = "-fx-background-color: #111122;";
+
+
+
+    @Override
+    public void start(Stage primaryStage) {
+
+        Color textOnHover = Color.web("#000000");
+        String onHover = "-fx-background-color: red;";
+
+        Button reset = new Button("Reset");
+        reset.setTranslateY(-300);
+        reset.setTranslateX(-300);
+        reset.setMaxWidth(100);
+
+        Button start = new Button("Start");
+        start.setTranslateY(-340);
+        start.setTranslateX(-300);
+        start.setMaxWidth(100);
+
+        Button quit = new Button("Quit");
+        quit.setTranslateY(200);
+        quit.setTranslateX(-300);
+        quit.setMaxWidth(100);
+
+        primaryStage.setTitle("My First JavaFX GUI");
+
+
+        list = buttons(text, styleSet);
+
+//        IntStream.range(0, 4).forEach(
+//                i -> button1.fire()
+//        );
+
+        StackPane layout1 = new StackPane();
+        scene1 = new Scene(layout1, 800, 800, Color.BLACK);
+
+        layout1.getChildren().addAll(reset, start, quit);
+
+        quit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                primaryStage.close();
+            }
+        });
+
+        start.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                layout1.getChildren().addAll(list);
+                onReset(onHover, textOnHover, styleSet, text);
+                start.setDisable(true);
+            }
+        });
+
+        if(flag){
+            start.fire();
+        }
+
+        reset.setOnAction(e -> {
+            flag = true;
+            restart(primaryStage);
+                });
+
+
+        primaryStage.setScene(scene1);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    public static void mouseOnHover(Button button, String onHover, Color textOnHover, String styleSet, Color text){
+        button.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                button.setStyle(onHover);
+                button.setTextFill(textOnHover);
+
+            }
+        });
+
+        button.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                button.setStyle(styleSet);
+                button.setTextFill(text);
+            }
+        });
+    }
+
+    public static boolean checkRight(ArrayList<Button> list, Button button){
+
+        System.out.println(button.getTranslateX());
+        System.out.println(button.getTranslateY());
+        System.out.println();
+        if (button.getTranslateX() == 200.0){
+            return true;
+        }
+        for (Button b : list){
+            if(button.getTranslateX() + 100 == b.getTranslateX() && button.getTranslateY() == b.getTranslateY()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkBottom(ArrayList<Button> list, Button button){
+        System.out.println(button.getTranslateX());
+        System.out.println(button.getTranslateY());
+        System.out.println();
+        if(button.getTranslateY() == 100.0){
+            return true;
+        }
+        for (Button b : list){
+            if(button.getTranslateX() == b.getTranslateX() && button.getTranslateY() + 100 == b.getTranslateY()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkLeft(ArrayList<Button> list, Button button){
+        System.out.println(button.getTranslateX());
+        System.out.println(button.getTranslateY());
+        System.out.println();
+        if(button.getTranslateX() == -100.0){
+            return true;
+        }
+        for (Button b : list){
+            if(button.getTranslateX() - 100 == b.getTranslateX() && button.getTranslateY() == b.getTranslateY()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkUp(ArrayList<Button> list, Button button){
+        System.out.println(button.getTranslateX());
+        System.out.println(button.getTranslateY());
+        System.out.println();
+        if(button.getTranslateY() == -200.0){
+            return true;
+        }
+        for (Button b : list){
+            if(button.getTranslateX() == b.getTranslateX() && button.getTranslateY() - 100 == b.getTranslateY()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void onMouseAction(Button button, ArrayList<Button> list){
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                boolean flag = false;
+
+                if(!checkRight(list, button)){
+                    button.setTranslateX(button.getTranslateX() + 100);
+
+                    return;
+                }
+
+                if(!checkBottom(list, button)) {
+                    button.setTranslateY(button.getTranslateY() + 100);
+                    return;
+                }
+
+                if(!checkLeft(list, button)) {
+                    button.setTranslateX(button.getTranslateX() - 100);
+                    return;
+                }
+
+                if(!checkUp(list, button)) {
+                    button.setTranslateY(button.getTranslateY() - 100);
+                    return;
+                }
+            }
+        });
+    }
+
+    public static ArrayList<Button> buttons(Color text, String styleSet){
+        Button button1= new Button("1");
+        button1.setTextFill(text);
+        button1.setStyle(styleSet);
+        button1.setFont(Font.font("Time New Roman", 20));
+        button1.setMaxWidth(100);
+        button1.setMaxHeight(100);
+        button1.setTranslateX(-100);
+        button1.setTranslateY(-200);
+        button1.setId("1");
+
+        String firstID = button1.getId();
+        System.out.println(firstID);
+
+
+        Button button2= new Button("2");
+        button2.setMaxWidth(100);
+        button2.setMaxHeight(100);
+        button2.setTextFill(text);
+        button2.setStyle(styleSet);
+        button2.setFont(Font.font("Time New Roman", 20));
+
+
+        button2.setTranslateX(button1.getTranslateX() + 100);
+        button2.setTranslateY(button1.getTranslateY());
+
+        button2.setId("2");
+
+
+        Button button3= new Button("3");
+        button3.setMaxWidth(100);
+        button3.setMaxHeight(100);
+        button3.setTextFill(text);
+        button3.setStyle(styleSet);
+        button3.setFont(Font.font("Time New Roman", 20));
+
+
+        button3.setTranslateX(button2.getTranslateX() + 100);
+        button3.setTranslateY(button2.getTranslateY());
+
+        Button button4= new Button("4");
+        button4.setMaxWidth(100);
+        button4.setMaxHeight(100);
+        button4.setTextFill(text);
+        button4.setStyle(styleSet);
+        button4.setFont(Font.font("Time New Roman", 20));
+
+
+        button4.setTranslateX(button3.getTranslateX() + 100);
+        button4.setTranslateY(button3.getTranslateY());
+
+        Button button5= new Button("5");
+        button5.setMaxWidth(100);
+        button5.setMaxHeight(100);
+        button5.setTextFill(text);
+        button5.setStyle(styleSet);
+        button5.setFont(Font.font("Time New Roman", 20));
+
+
+        button5.setTranslateX(button1.getTranslateX());
+        button5.setTranslateY(button1.getTranslateY() + 100);
+
+        Button button6= new Button("6");
+        button6.setMaxWidth(100);
+        button6.setMaxHeight(100);
+        button6.setTextFill(text);
+        button6.setStyle(styleSet);
+        button6.setFont(Font.font("Time New Roman", 20));
+
+
+        button6.setTranslateX(button5.getTranslateX() + 100);
+        button6.setTranslateY(button5.getTranslateY());
+
+        Button button7= new Button("7");
+        button7.setMaxWidth(100);
+        button7.setMaxHeight(100);
+        button7.setTextFill(text);
+        button7.setStyle(styleSet);
+        button7.setFont(Font.font("Time New Roman", 20));
+
+
+        button7.setTranslateX(button6.getTranslateX() + 100);
+        button7.setTranslateY(button6.getTranslateY());
+
+        Button button8= new Button("8");
+        button8.setMaxWidth(100);
+        button8.setMaxHeight(100);
+        button8.setTextFill(text);
+        button8.setStyle(styleSet);
+        button8.setFont(Font.font("Time New Roman", 20));
+
+
+        button8.setTranslateX(button7.getTranslateX() + 100);
+        button8.setTranslateY(button7.getTranslateY());
+
+        Button button9= new Button("9");
+        button9.setMaxWidth(100);
+        button9.setMaxHeight(100);
+        button9.setTextFill(text);
+        button9.setStyle(styleSet);
+        button9.setFont(Font.font("Time New Roman", 20));
+
+
+        button9.setTranslateX(button5.getTranslateX());
+        button9.setTranslateY(button5.getTranslateY() + 100);
+
+        Button button10= new Button("10");
+        button10.setMaxWidth(100);
+        button10.setMaxHeight(100);
+        button10.setTextFill(text);
+        button10.setStyle(styleSet);
+        button10.setFont(Font.font("Time New Roman", 20));
+
+
+        button10.setTranslateX(button9.getTranslateX() + 100);
+        button10.setTranslateY(button9.getTranslateY());
+
+        Button button11= new Button("11");
+        button11.setMaxWidth(100);
+        button11.setMaxHeight(100);
+        button11.setTextFill(text);
+        button11.setStyle(styleSet);
+        button11.setFont(Font.font("Time New Roman", 20));
+
+
+        button11.setTranslateX(button10.getTranslateX() + 100);
+        button11.setTranslateY(button10.getTranslateY());
+
+        Button button12= new Button("12");
+        button12.setMaxWidth(100);
+        button12.setMaxHeight(100);
+        button12.setTextFill(text);
+        button12.setStyle(styleSet);
+        button12.setFont(Font.font("Time New Roman", 20));
+
+
+        button12.setTranslateX(button11.getTranslateX() + 100);
+        button12.setTranslateY(button11.getTranslateY());
+
+        Button button13= new Button("13");
+        button13.setMaxWidth(100);
+        button13.setMaxHeight(100);
+        button13.setTextFill(text);
+        button13.setStyle(styleSet);
+        button13.setFont(Font.font("Time New Roman", 20));
+
+
+        button13.setTranslateX(button9.getTranslateX());
+        button13.setTranslateY(button9.getTranslateY() + 100);
+
+        Button button14= new Button("14");
+        button14.setMaxWidth(100);
+        button14.setMaxHeight(100);
+        button14.setTextFill(text);
+        button14.setStyle(styleSet);
+        button14.setFont(Font.font("Time New Roman", 20));
+
+
+        button14.setTranslateX(button13.getTranslateX() + 100);
+        button14.setTranslateY(button13.getTranslateY());
+
+        Button button15= new Button("15");
+        button15.setMaxWidth(100);
+        button15.setMaxHeight(100);
+        button15.setTextFill(text);
+        button15.setStyle(styleSet);
+        button15.setFont(Font.font("Time New Roman", 20));
+
+
+        button15.setTranslateX(button14.getTranslateX() + 100);
+        button15.setTranslateY(button14.getTranslateY());
+
+
+        button3.setId("3");
+        button4.setId("4");
+        button5.setId("5");
+        button6.setId("6");
+        button7.setId("7");
+        button8.setId("8");
+        button9.setId("9");
+        button10.setId("10");
+        button11.setId("11");
+        button12.setId("12");
+        button13.setId("13");
+        button14.setId("14");
+        button15.setId("15");
+
+        ArrayList<Button> list = new ArrayList<>();
+        list.add(button1);
+        list.add(button2);
+        list.add(button3);
+        list.add(button4);
+        list.add(button5);
+        list.add(button6);
+        list.add(button7);
+        list.add(button8);
+        list.add(button9);
+        list.add(button10);
+        list.add(button11);
+        list.add(button12);
+        list.add(button13);
+        list.add(button14);
+        list.add(button15);
+
+        return list;
+    }
+
+    public static void onReset(String onHover, Color textOnHover, String styleSet, Color text){
+
+            for (Button b : list) {
+                mouseOnHover(b, onHover, textOnHover, styleSet, text);
+                onMouseAction(b, list);
+            }
+
+    }
+
+    void restart(Stage stage) {
+        cleanup();
+        start(stage);
+    }
+
+    void cleanup(){
+        list = buttons(text, styleSet);
+    }
+
+
+}
